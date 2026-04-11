@@ -68,7 +68,7 @@ const STRINGS = {
     cadOpt4: "4 — poprawki",
     labelCadHours: "Czas (h)",
     labelCadCharge: "Koszt CAD (zł)",
-    cadRatesHint: "Stawki jak w arkuszu: poziom 1→30, 2→50, 3→80, 4→10 zł/h.",
+    cadRatesHint: "Stawki jak w arkuszu: poziom 1→25, 2→35, 3→50, 4→10 zł/h.",
     subheadHardware: "Dodatkowe części",
     addHw: "+ Dodaj wiersz części",
     sectionPack: "Opakowanie i wysyłka",
@@ -159,7 +159,7 @@ const STRINGS = {
     cadOpt4: "4 — Revisions",
     labelCadHours: "Time (h)",
     labelCadCharge: "CAD charge (PLN)",
-    cadRatesHint: "Rates match the sheet: level 1→30, 2→50, 3→80, 4→10 PLN/h.",
+    cadRatesHint: "Rates match the sheet: level 1→25, 2→35, 3→50, 4→10 PLN/h.",
     subheadHardware: "Extra parts",
     addHw: "+ Add parts row",
     sectionPack: "Packaging & shipping",
@@ -267,10 +267,10 @@ function syncAdvToggleLabel() {
 
 function cadHourlyRate(level) {
   const L = Number(level);
-  if (L === 1) return 30;
-  if (L === 2) return 50;
+  if (L === 1) return 25;
+  if (L === 2) return 35;
   if (L === 4) return 10;
-  return 80;
+  return 50;
 }
 
 function computeMachineRate() {

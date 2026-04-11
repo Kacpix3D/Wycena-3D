@@ -41,15 +41,15 @@
       <section class="card" id="job">
         <h2 data-i18n="sectionJob">Zlecenie i druk</h2>
         <div class="fields fields--2">
-          <label><span data-i18n="labelPartName">Nazwa części</span> <input type="text" id="partName" value="Tpu plug" /></label>
-          <label><span data-i18n="labelRevision">Rewizja</span> <input type="text" id="revision" value="V1" /></label>
+          <label><span data-i18n="labelPartName">Nazwa części</span> <input type="text" id="partName" value="" /></label>
+          <label><span data-i18n="labelRevision">Rewizja</span> <input type="text" id="revision" value="" /></label>
           <label><span data-i18n="labelDate">Data</span> <input type="date" id="jobDate" /></label>
-          <label><span data-i18n="labelPreparedBy">Opracował</span> <input type="text" id="preparedBy" value="Kacper Iwanicki" /></label>
-          <label><span data-i18n="labelMaterial">Materiał (filament)</span> <input type="text" id="materialUsed" value="ABS" /></label>
-          <label class="span-2"><span data-i18n="labelFilamentKg">Cena filamentu (zł/kg)</span> <input type="number" id="filamentPerKg" min="0" step="0.01" value="75" /></label>
-          <label><span data-i18n="labelFilamentG">Zużycie filamentu (g)</span> <input type="number" id="filamentG" min="0" step="0.1" value="28" /></label>
-          <label><span data-i18n="labelPrintHours">Czas druku (h)</span> <input type="number" id="printHours" min="0" step="0.01" value="0.95" /></label>
-          <label><span data-i18n="labelLaborMin">Robocizna (min)</span> <input type="number" id="laborMin" min="0" step="1" value="5" /></label>
+          <label><span data-i18n="labelPreparedBy">Opracował</span> <input type="text" id="preparedBy" value="" /></label>
+          <label><span data-i18n="labelMaterial">Materiał (filament)</span> <input type="text" id="materialUsed" value="" /></label>
+          <label class="span-2"><span data-i18n="labelFilamentKg">Cena filamentu (zł/kg)</span> <input type="number" id="filamentPerKg" min="0" step="0.01" value="" /></label>
+          <label><span data-i18n="labelFilamentG">Zużycie filamentu (g)</span> <input type="number" id="filamentG" min="0" step="0.1" value="" /></label>
+          <label><span data-i18n="labelPrintHours">Czas druku (h)</span> <input type="number" id="printHours" min="0" step="0.01" value="" /></label>
+          <label><span data-i18n="labelLaborMin">Robocizna (min)</span> <input type="number" id="laborMin" min="0" step="1" value="" /></label>
         </div>
       </section>
 
@@ -68,7 +68,7 @@
             <label><span data-i18n="labelMaint">Serwis i utrzymanie (zł/rok)</span> <input type="number" id="maintAnnual" min="0" step="1" value="200" /></label>
             <label><span data-i18n="labelLife">Szacowany okres eksploatacji (lata)</span> <input type="number" id="lifeYrs" min="0.1" step="0.1" value="5" /></label>
             <label><span data-i18n="labelUptime">Wykorzystanie roczne (0–1)</span> <input type="number" id="uptimePct" min="0" max="1" step="0.01" value="0.05" data-i18n-title="titleUptime" title="Jaka część roku drukarka faktycznie pracuje (udział)" /></label>
-            <label><span data-i18n="labelPower">Średnia moc (W)</span> <input type="number" id="powerW" min="0" step="1" value="150" /></label>
+            <label><span data-i18n="labelPower">Średnia moc (W)</span> <input type="number" id="powerW" min="0" step="1" value="200" /></label>
             <label><span data-i18n="labelElec">Cena energii (zł/kWh)</span> <input type="number" id="elecPerKwh" min="0" step="0.01" value="1.1" /></label>
             <label><span data-i18n="labelBuffer">Bufor kosztów maszyny</span> <input type="number" id="bufferFactor" min="0.1" step="0.01" value="1.2" data-i18n-title="titleBuffer" title="np. nieprzewidziane koszty, przestoje" /></label>
           </div>
@@ -127,7 +127,7 @@
               <label><span data-i18n="labelCadHours">Czas (h)</span> <input type="number" id="cadHours" min="0" step="0.001" value="0.083" /></label>
               <label class="readonly"><span data-i18n="labelCadCharge">Koszt CAD (zł)</span> <input type="text" id="cadCharge" readonly /></label>
             </div>
-            <p class="hint" data-i18n="cadRatesHint">Stawki jak w arkuszu: poziom 1→30, 2→50, 3→80, 4→10 zł/h.</p>
+            <p class="hint" data-i18n="cadRatesHint">Stawki jak w arkuszu: poziom 1→25, 2→35, 3→50, 4→10 zł/h.</p>
           </div>
         </div>
 
