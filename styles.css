@@ -814,7 +814,7 @@ table.data td.num {
 }
 
 .main-logo {
-    height: 140px; /* Możesz dostosować wielkość */
+    height: 100px; /* Możesz dostosować wielkość */
     width: auto;
     display: block;
 }
