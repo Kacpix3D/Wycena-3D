@@ -807,7 +807,7 @@ table.data td.num {
 }
 /* Stylizacja logo w lewym rogu */
 .logo-container {
-    position: fixed; /* Lub 'fixed' jeśli ma zostać przy przewijaniu */
+    position: relative; /* Lub 'fixed' jeśli ma zostać przy przewijaniu */
     top: 10px;
     left: 20px;
     z-index: 9999;

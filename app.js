@@ -14,7 +14,7 @@ const STRINGS = {
     eyebrow: "Kalkulator",
     heroTitle: "Wycena produktów z druku 3D",
     heroLede:
-      "Filament, czas pracy maszyny, robocizna, CAD, opakowanie — ta sama logika co w arkuszu, tylko czytelniejszy układ.",
+      "Filament, czas pracy maszyny, robocizna, CAD, opakowanie — wypełniasz formularz a cena sama się policzy.",
     btnReset: "Przywróć domyślne",
     btnPrint: "Drukuj / PDF",
     sectionJob: "Zlecenie i druk",
@@ -31,7 +31,7 @@ const STRINGS = {
     show: "Pokaż",
     hide: "Ukryj",
     advHint:
-      "Koszty drukarki, prąd i stratność materiału — do wyliczenia stawki maszyny (zł/h), jak w arkuszu <code>Zaawansowane</code>.",
+      "Koszty drukarki, prąd i stratność materiału — do wyliczenia stawki maszyny (zł/h), <code>Zaawansowane</code>.",
     labelMatEff: "Współczynnik strat materiału",
     titleMatEff: "np. 1,1 = 10% zapasu na odpad, retrakcje itd.",
     labelLaborRate: "Stawka robocizny (zł/h)",
@@ -68,7 +68,7 @@ const STRINGS = {
     cadOpt4: "4 — poprawki",
     labelCadHours: "Czas (h)",
     labelCadCharge: "Koszt CAD (zł)",
-    cadRatesHint: "Stawki jak w arkuszu: poziom 1→25, 2→35, 3→50, 4→10 zł/h.",
+    cadRatesHint: "Stawki: poziom 1→25, 2→35, 3→50, 4→10 zł/h.",
     subheadHardware: "Dodatkowe części",
     addHw: "+ Dodaj wiersz części",
     sectionPack: "Opakowanie i wysyłka",
@@ -83,7 +83,7 @@ const STRINGS = {
     marginTitle: "Sugerowana cena sprzedaży",
     marginHint: "Przy założonej marży od kosztu własnego (bez VAT).",
     footer:
-      "Wartości przeliczają się na bieżąco. Waluta: zł. Logika zgodna z arkuszem Excel.",
+      "Wartości przeliczają się na bieżąco. Waluta: zł.",
     lineName: "Nazwa",
     lineQty: "Ilość",
     lineUnit: "Cena j. (zł)",

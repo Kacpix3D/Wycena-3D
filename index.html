@@ -29,7 +29,7 @@
       <div class="hero__text">
         <p class="eyebrow" data-i18n="eyebrow">Kalkulator</p>
         <h1 data-i18n="heroTitle">Wycena produktów z druku 3D</h1>
-        <p class="lede" data-i18n="heroLede">Filament, czas pracy maszyny, robocizna, CAD, opakowanie — ta sama logika co w arkuszu, tylko czytelniejszy układ.</p>
+        <p class="lede" data-i18n="heroLede">Filament, czas pracy maszyny, robocizna, CAD, opakowanie — wypełniasz formularz a cena sama się policzy.</p>
       </div>
       <div class="hero__actions">
         <button type="button" class="btn btn--ghost" id="btn-reset" data-i18n="btnReset">Przywróć domyślne</button>
@@ -58,7 +58,7 @@
           <h2 data-i18n="sectionAdv">Ustawienia zaawansowane</h2>
           <button type="button" class="btn btn--small btn--ghost" id="btn-toggle-adv" aria-expanded="false">Pokaż</button>
         </div>
-        <p class="hint" data-i18n-html="advHint">Koszty drukarki, prąd i stratność materiału — do wyliczenia stawki maszyny (zł/h), jak w arkuszu <code>Zaawansowane</code>.</p>
+        <p class="hint" data-i18n-html="advHint">Koszty drukarki, prąd i stratność materiału — do wyliczenia stawki maszyny (zł/h), <code>Zaawansowane</code>.</p>
         <div class="adv-panel hidden" id="adv-panel">
           <div class="fields fields--2">
             <label><span data-i18n="labelMatEff">Współczynnik strat materiału</span> <input type="number" id="matEfficiency" min="0.1" step="0.01" value="1.1" data-i18n-title="titleMatEff" title="np. 1,1 = 10% zapasu na odpad, retrakcje itd." /></label>
@@ -127,7 +127,7 @@
               <label><span data-i18n="labelCadHours">Czas (h)</span> <input type="number" id="cadHours" min="0" step="0.001" value="0.083" /></label>
               <label class="readonly"><span data-i18n="labelCadCharge">Koszt CAD (zł)</span> <input type="text" id="cadCharge" readonly /></label>
             </div>
-            <p class="hint" data-i18n="cadRatesHint">Stawki jak w arkuszu: poziom 1→25, 2→35, 3→50, 4→10 zł/h.</p>
+            <p class="hint" data-i18n="cadRatesHint">Stawki: poziom 1→25, 2→35, 3→50, 4→10 zł/h.</p>
           </div>
         </div>
 
@@ -159,7 +159,7 @@
     </main>
 
     <footer class="footer">
-      <p data-i18n="footer">Wartości przeliczają się na bieżąco. Waluta: zł. Logika zgodna z arkuszem Excel.</p>
+      <p data-i18n="footer">Wartości przeliczają się na bieżąco. Waluta: zł.</p>
     </footer>
   </div>
   <script src="app.js"></script>
