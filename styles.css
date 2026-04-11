@@ -805,3 +805,22 @@ table.data td.num {
     --accent-bright: #0d9488;
   }
 }
+/* Stylizacja logo w lewym rogu */
+.logo-container {
+    position: fixed; /* Lub 'fixed' jeśli ma zostać przy przewijaniu */
+    top: 10px;
+    left: 20px;
+    z-index: 9999;
+}
+
+.main-logo {
+    height: 140px; /* Możesz dostosować wielkość */
+    width: auto;
+    display: block;
+}
+
+/* Opcjonalnie: dodaj margines do nawigacji, 
+   żeby logo na nią nie nachodziło, jeśli jest za duże */
+nav {
+    padding-left: 180px; 
+}
