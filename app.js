@@ -3,7 +3,7 @@
  * PL / EN — przełącznik u góry strony.
  */
 
-const MARGINS = [25, 30, 40, 50, 60];
+const FINAL_MARGIN_PCT = 60;
 const LANG_KEY = "printPricing_lang";
 
 const STRINGS = {
@@ -80,8 +80,8 @@ const STRINGS = {
     dtSumMachine: "Maszyna (czas druku)",
     dtSumPack: "Opakowanie i wysyłka",
     dtLanded: "Pełny koszt własny",
-    marginTitle: "Sugerowana cena sprzedaży",
-    marginHint: "Przy założonej marży od kosztu własnego (bez VAT).",
+    marginTitle: "Ostateczna cena",
+    marginHint: "Cena bez podatku VAT",
     footer:
       "Wartości przeliczają się na bieżąco. Waluta: zł.",
     lineName: "Nazwa",
@@ -90,7 +90,7 @@ const STRINGS = {
     lineRemove: "Usuń",
     rowPrinted: "Wydrukowana część",
     rowCad: "Modelowanie 3D / CAD",
-    marginPct: "Marża {pct}%",
+    marginPct: "Ostateczna cena",
     hPerYr: "h/rok",
     zlPerH: "zł/h",
     currencySuffix: "zł",
@@ -171,8 +171,8 @@ const STRINGS = {
     dtSumMachine: "Machine (print time)",
     dtSumPack: "Packaging & shipping",
     dtLanded: "Total landed cost",
-    marginTitle: "Suggested sale price",
-    marginHint: "At the chosen margin on your landed cost (excl. VAT).",
+    marginTitle: "Final price",
+    marginHint: "Price excluding VAT",
     footer:
       "Values update live. Currency: PLN (zł). Logic matches the Excel workbook.",
     lineName: "Name",
@@ -181,7 +181,7 @@ const STRINGS = {
     lineRemove: "Remove",
     rowPrinted: "Printed part",
     rowCad: "3D modeling / CAD",
-    marginPct: "{pct}% margin",
+    marginPct: "Final price",
     hPerYr: "h/yr",
     zlPerH: "PLN/h",
     currencySuffix: "PLN",
@@ -468,12 +468,11 @@ function recalc() {
 
   const ul = $("margin-list");
   ul.innerHTML = "";
-  MARGINS.forEach((pct) => {
-    const price = landed / (1 - pct / 100);
-    const li = document.createElement("li");
-    li.innerHTML = `<span class="pct">${escapeAttr(t("marginPct").replace("{pct}", String(pct)))}</span><span>${money(price)} ${z}</span>`;
-    ul.appendChild(li);
-  });
+  const price = landed / (1 - FINAL_MARGIN_PCT / 100);
+  const li = document.createElement("li");
+  li.className = "final-price";
+  li.innerHTML = `<span class="pct">${escapeAttr(t("marginPct"))}</span><span>${money(price)} ${z}</span>`;
+  ul.appendChild(li);
 
   try {
     localStorage.setItem(
