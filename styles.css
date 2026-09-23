@@ -726,6 +726,18 @@ table.data td.num {
   font-size: 0.85rem;
 }
 
+.margin-list li.final-price {
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-color: rgba(94, 234, 212, 0.28);
+  background: linear-gradient(135deg, rgba(45, 212, 191, 0.12), rgba(14, 165, 233, 0.08));
+}
+
+.margin-list li.final-price .pct {
+  font-weight: 600;
+  color: var(--text);
+}
+
 .footer {
   margin-top: 2.25rem;
   padding-top: 1.25rem;
