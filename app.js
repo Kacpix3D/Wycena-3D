@@ -504,7 +504,7 @@ function recalc() {
 
   const ul = $("margin-list");
   ul.innerHTML = "";
-  const price = landed / (1 - FINAL_MARGIN_PCT / 100);
+  const price = landed * (1 + FINAL_MARGIN_PCT / 100);
   const li = document.createElement("li");
   li.className = "final-price";
   li.innerHTML = `<span class="pct">${escapeAttr(t("marginPct"))}</span><span>${money(price)} ${z}</span>`;
