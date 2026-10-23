@@ -14,7 +14,7 @@
 </head>
 <body>
   <div class="logo-container">
-    <a href="https://kacpix3d.github.io/zamowienia/">
+    <a href="https://kacpix3d.github.io/Wycena-3D/">
      <img src="kacpix-logo.png" alt="Kacpix 3D Logo" class="main-logo">
     </a>
     </div>
@@ -45,12 +45,23 @@
         <div class="fields fields--2">
           <label><span data-i18n="labelPartName">Nazwa części</span> <input type="text" id="partName" value="" /></label>
           <label><span data-i18n="labelRevision">Rewizja</span> <input type="text" id="revision" value="" /></label>
+          <label><span>Liczba sztuk</span> <input type="number" id="partQty" min="1" step="1" value="1" /></label>
           <label><span data-i18n="labelDate">Data</span> <input type="date" id="jobDate" /></label>
           <label><span data-i18n="labelPreparedBy">Opracował</span> <input type="text" id="preparedBy" value="" /></label>
           <label><span data-i18n="labelMaterial">Materiał (filament)</span> <input type="text" id="materialUsed" value="" /></label>
           <label class="span-2"><span data-i18n="labelFilamentKg">Cena filamentu (zł/kg)</span> <input type="number" id="filamentPerKg" min="0" step="0.01" value="" /></label>
-          <label><span data-i18n="labelFilamentG">Zużycie filamentu (g)</span> <input type="number" id="filamentG" min="0" step="0.1" value="" /></label>
-          <label><span data-i18n="labelPrintHours">Czas druku (h)</span> <input type="number" id="printHours" min="0" step="0.01" value="" /></label>
+<label><span>Zużycie filamentu</span>
+  <div class="unit-box">
+    <input type="number" id="filamentG" min="0" step="0.1" value="" />
+    <span>g</span>
+  </div>
+</label>
+<label><span data-i18n="labelPrintHours">Czas druku</span> 
+  <div class="time-print-box">
+    <input type="number" id="printHours" placeholder="h" min="0" step="1" value="" /> <span>h</span>
+    <input type="number" id="printMins" placeholder="min" min="0" max="59" step="1" value="" /> <span>min</span>
+  </div>
+</label>
           <label><span data-i18n="labelLaborMin">Robocizna (min)</span> <input type="number" id="laborMin" min="0" step="1" value="" /></label>
         </div>
       </section>
@@ -126,38 +137,78 @@
                   <option value="4" data-i18n="cadOpt4">4 — poprawki</option>
                 </select>
               </label>
-              <label><span data-i18n="labelCadHours">Czas (h)</span> <input type="number" id="cadHours" min="0" step="0.001" value="0.083" /></label>
+<label><span data-i18n="labelCadHours">Czas CAD</span> 
+  <div class="time-print-box">
+    <input type="number" id="cadHours" placeholder="h" min="0" step="1" value="0" /> <span>h</span>
+    <input type="number" id="cadMins" placeholder="min" min="0" max="59" step="1" value="5" /> <span>min</span>
+  </div>
+</label>
               <label class="readonly"><span data-i18n="labelCadCharge">Koszt CAD (zł)</span> <input type="text" id="cadCharge" readonly /></label>
             </div>
             <p class="hint" data-i18n="cadRatesHint">Stawki: poziom 1→25, 2→35, 3→50, 4→10 zł/h.</p>
           </div>
         </div>
 
+        
+        <label class="check-inline" style="margin-top: 15px; cursor: pointer;">
+          <input type="checkbox" id="hwEnabled" />
+          <span>Pokaż dodatkowe części</span>
+          </label>
+        
+        <div id="hw-wrapper">
         <div class="subhead"><span data-i18n="subheadHardware">Dodatkowe części</span></div>
         <div id="hardware-rows" class="line-items"></div>
         <button type="button" class="btn btn--small btn--ghost" id="add-hw" data-i18n="addHw">+ Dodaj wiersz części</button>
       </section>
 
-      <section class="card" id="packaging">
-        <h2 data-i18n="sectionPack">Opakowanie i wysyłka</h2>
-        <div id="pack-rows" class="line-items"></div>
-        <button type="button" class="btn btn--small btn--ghost" id="add-pack" data-i18n="addPack">+ Dodaj opakowanie</button>
-        <label class="postage"><span data-i18n="labelPostage">Koszt wysyłki (zł)</span> <input type="number" id="postage" min="0" step="0.01" value="0" /></label>
-      </section>
+    <!-- CAŁKOWICIE UKRYTA SEKCJA OPAKOWANIA -->
+      <div style="display: none;">
+        <section class="card" id="packaging">
+          <h2 style="margin-bottom: 0;">
+            <label class="check-inline" style="margin: 0; cursor: pointer;">
+              <input type="checkbox" id="packEnabled" />
+              <span data-i18n="sectionPack">Opakowanie i wysyłka</span>
+            </label>
+          </h2>
+
+          <div id="pack-wrapper" style="margin-top: 15px;">
+            <div id="pack-rows" class="line-items"></div>
+            <button type="button" class="btn btn--small btn--ghost" id="add-pack" data-i18n="addPack">+ Dodaj opakowanie</button>
+            <label class="postage"><span data-i18n="labelPostage">Koszt wysyłki (zł)</span> <input type="number" id="postage" min="0" step="0.01" value="0" /></label>
+          </div>
+        </section>
+      </div>
 
       <section class="card totals-card">
         <h2 data-i18n="sectionTotals">Podsumowanie i ceny</h2>
         <dl class="kv kv--large">
           <dt data-i18n="dtSumMat">Materiały</dt><dd id="sum-mat">0,00</dd>
+          
+          <dt id="dt-sum-cad" data-i18n="rowCad" style="display: none;">Modelowanie 3D / CAD</dt>
+          <dd id="sum-cad" style="display: none;">0,00</dd>
+          <dt id="dt-sum-hw" data-i18n="subheadHardware" style="display: none;">Dodatkowe części</dt>
+          <dd id="sum-hw" style="display: none;">0,00</dd>
+
           <dt data-i18n="dtSumLabor">Robocizna</dt><dd id="sum-labor">0,00</dd>
           <dt data-i18n="dtSumMachine">Maszyna (czas druku)</dt><dd id="sum-machine">0,00</dd>
-          <dt data-i18n="dtSumPack">Opakowanie i wysyłka</dt><dd id="sum-pack">0,00</dd>
+          
+          <!-- UKRYTA LINIJKA WYSYŁKI W PODSUMOWANIU -->
+          <dt data-i18n="dtSumPack" style="display: none;">Opakowanie i wysyłka</dt>
+          <dd id="sum-pack" style="display: none;">0,00</dd>
+          
           <dt class="landed"><strong data-i18n="dtLanded">Pełny koszt własny</strong></dt><dd class="landed"><strong id="landed">0,00</strong></dd>
         </dl>
-        <h3 class="margin-title" data-i18n="marginTitle">Ostateczna cena</h3>
         <p class="hint margin-hint" data-i18n="marginHint">Cena bez podatku VAT</p>
         <ul class="margin-list" id="margin-list"></ul>
       </section>
+
+      <!-- Miejsce na podpis na wydruku -->
+      <div class="signature-wrapper">
+        <div class="print-signature">
+          <div class="sig-line"></div>
+          <span>Podpis wystawcy</span>
+        </div>
+      </div>
     </main>
 
     <footer class="footer">

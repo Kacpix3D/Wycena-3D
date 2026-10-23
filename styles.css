@@ -752,71 +752,386 @@ table.data td.num {
   font-weight: 600;
 }
 
+/* Stylowanie podwójnego czasu na ekranie */
+.time-print-box {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.time-print-box span {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-right: 10px;
+}
+
+
+/* ==========================================================================
+   WYDRUK PRO - STYL DOKUMENTU / FAKTURY (OSTATECZNA PERFEKCJA)
+   ========================================================================== */
+  /* =========================================================
+   LOGIKA PRZEŁĄCZNIKÓW NA EKRANIE KOMPUTERA
+   ========================================================= */
+
+/* Wymuszamy pełną szerokość Podsumowania na ekranie komputera */
+.totals-card {
+  grid-column: 1 / -1 !important;
+}
+
+/* Domyślnie ukrywamy zawartość obu kafelków */
+#hw-wrapper, #pack-wrapper {
+  display: none;
+}
+
+/* Pokazujemy je z płynną animacją, tylko gdy checkbox jest kliknięty */
+body:has(#hwEnabled:checked) #hw-wrapper,
+body:has(#packEnabled:checked) #pack-wrapper {
+  display: block;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 @media print {
+  /* 1. Ustawienia czystej kartki A4 */
+  @page {
+    size: A4 portrait;
+    margin: 1cm 1.5cm;
+  }
+
+  /* 2. Reset tła i ustalenie stałej wielkości czcionki */
   body {
-    background: #fff;
-    color: #111;
+    background: #fff !important;
+    color: #000 !important;
+    font-size: 10pt !important;
+    line-height: 1.3 !important;
+  }
+  body::before { display: none !important; }
+
+  /* 3. Twarde ukrycie wszystkich "przeszkadzajek" */
+  .lang-bar, .hero__actions, #btn-toggle-adv, #add-hw, 
+  #add-pack, .line-row .remove, .footer, nav,
+  #adv-toggle-card, #packaging, button,
+  .check-inline { 
+    display: none !important;
+  }
+  
+  .cad-block { display: none !important; }
+
+  /* Próba ukrycia nagłówków przeglądarki */
+  @page {
+    @top-left { content: none; }
+    @top-right { content: none; }
+    @bottom-left { content: none; }
+    @bottom-right { content: none; }
   }
 
-  body::before {
-    display: none;
+  /* 4. NAGŁÓWEK DOKUMENTU (NAPRAWA LINII I WYŚRODKOWANIE TEKSTU) */
+  .app { 
+    padding: 0 !important; 
+    margin: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important; 
   }
-
+  
   .hero {
-    background: #fff;
-    border: 1px solid #ccc;
-    box-shadow: none;
+    display: block !important;
+    width: 100% !important; /* Rozciąga główny kontener nagłówka na 100% kartki */
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 2px solid #000 !important; /* Ta linia pójdzie teraz od krawędzi do krawędzi */
+    border-radius: 0 !important; 
+    box-shadow: none !important;
+    padding: 0 0 15px 0 !important;
+    margin: 0 0 20px 0 !important;
+    height: auto !important;
+    min-height: 0 !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+  
+  .logo-container {
+    position: static !important;
+    display: block !important;
+    margin: 0 auto 10px auto !important;
+    text-align: center !important;
+  }
+  
+  .main-logo { 
+    height: 70px !important; 
+    display: inline-block !important; 
+    margin: 0 auto !important; 
   }
 
-  .hero::before,
-  .hero::after {
-    display: none;
+  .hero__text { 
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important; /* Zdejmuje limit szerokości ze strony internetowej */
+    text-align: center !important; /* Wyśrodkowuje zawartość wewnątrz kontenera */
+  }
+  
+  .hero h1 { 
+    color: #000 !important; 
+    font-size: 16pt !important; 
+    margin: 0 0 5px 0 !important; 
+    background: none !important; 
+    -webkit-background-clip: unset !important; 
+    text-transform: uppercase;
+    text-align: center !important;
+  }
+  .eyebrow { display: none !important; } 
+  
+.lede { 
+    display: none !important; /* Ukrywa szary opis reklamowy na wydruku faktury */
   }
 
-  .hero h1 {
-    color: #111;
-    background: none;
-    -webkit-background-clip: unset;
-    background-clip: unset;
+  /* 5. UKŁAD STRUKTURALNY */
+  .grid { display: block !important; }
+
+  /* 6. RESET KAFELKÓW DO WYGLĄDU SEKCJI DOKUMENTU */
+  .card {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin-bottom: 20px !important;
+    break-inside: avoid !important;
+  }
+  .card h2 { 
+    font-size: 12pt !important; 
+    border-bottom: 1px solid #ccc !important; 
+    padding-bottom: 3px !important;
+    margin-bottom: 10px !important;
+    color: #000 !important;
+    text-align: left !important;
+  }
+  
+  /* 7. ZLECENIE I DRUK */
+  #job .fields {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 10px 20px !important;
   }
 
-  .eyebrow {
-    color: #0d9488;
-    text-shadow: none;
+  /* 8. PÓLA WYPEŁNIANIA */
+  .fields label {
+    font-size: 8pt !important;
+    color: #333 !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0 !important;
+  }
+  input, select {
+    background: transparent !important;
+    border: none !important;
+    border-bottom: 1px dashed #000 !important; 
+    border-radius: 0 !important;
+    color: #000 !important;
+    font-size: 11pt !important;
+    padding: 2px 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    font-weight: 600 !important;
+    margin-top: 2px !important;
   }
 
-  .hero__actions,
-  .lang-bar,
-  #btn-toggle-adv,
-  #add-hw,
-  #add-pack,
-  .line-row .remove,
-  .footer {
+  /* 9. TABELA MATERIAŁÓW */
+  .table-wrap { border: none !important; margin-bottom: 5px !important;}
+  table.data { width: 100% !important; border-collapse: collapse !important; }
+  table.data th { 
+    background: #f0f0f0 !important; 
+    color: #000 !important; 
+    font-size: 8pt !important;
+    border: 1px solid #ccc !important;
+    padding: 4px !important;
+  }
+  table.data td {
+    border: 1px solid #ccc !important;
+    font-size: 9pt !important;
+    padding: 4px !important;
+  }
+
+  /* 10. PODSUMOWANIE I CENY */
+  .totals-card {
+    width: 100% !important; 
+    margin-left: 0 !important; 
+    border: none !important; 
+    padding: 0 !important;
+    margin-top: 20px !important;
+  }
+  
+  .kv { 
+    margin-bottom: 0 !important; 
+    width: 100% !important; 
+    column-gap: 0 !important; /* <--- TO USUWA PRZERWĘ I ŁĄCZY LINIĘ W CAŁOŚĆ */
+  }
+  .kv dt { font-size: 9pt !important; color: #333 !important; padding: 4px 0 !important; }
+  .kv dd { font-size: 10pt !important; font-weight: bold !important; color: #000 !important; margin-left: 0 !important; padding: 4px 0 !important; }
+  
+  .kv dt.landed, .kv dd.landed {
+    border-top: 1px solid #ccc !important;
+    padding-top: 8px !important;
+    margin-top: 4px !important;
+  }
+
+  .margin-title { font-size: 11pt !important; color: #000 !important; margin-top: 15px !important; text-align: left !important;}
+  .margin-hint { text-align: left !important; margin-bottom: 5px !important;}
+  
+  .margin-list { gap: 0 !important; width: 100% !important; }
+  .margin-list li { 
+    background: transparent !important; 
+    border: none !important; 
+    padding: 0 !important; 
+    width: 100% !important; 
+    display: flex !important; 
+    justify-content: space-between !important; 
+    border-radius: 0 !important; /* <--- TO USUWA ZAKRZYWIONE "ROGI" NA GRUBEJ LINII */
+  }
+  .margin-list li.final-price { 
+    font-size: 16pt !important; 
+    border-top: 2px solid #000 !important;
+    padding-top: 10px !important; 
+    margin-top: 5px !important; 
+  }
+
+  /* =========================================================
+     11. WARUNKOWE UKRYWANIE
+     ========================================================= */
+  body:has(#cadEnabled:not(:checked)) #materials {
     display: none !important;
   }
 
-  .card {
-    box-shadow: none;
-    border: 1px solid #ccc;
-    break-inside: avoid;
-    backdrop-filter: none;
-    -webkit-backdrop-filter: none;
+/* Wyłączenie wymuszania wielkich liter na jednostkach (h, min, g) */
+  .time-print-box span,
+  .unit-box span {
+    text-transform: lowercase !important;
+    font-size: 10pt !important;
+    font-weight: 600 !important;
+    color: #000 !important;
   }
 
-  .card:hover {
-    border-color: #ccc;
+/* Czas druku / CAD: elastyczne pole mieszczące obie cyfry bez ucinania */
+  .time-print-box {
+    display: flex !important;
+    justify-content: flex-start !important;
+    align-items: baseline !important;
+    width: 100% !important;
+    border-bottom: 1px dashed #000 !important;
+    margin-top: 2px !important;
+    gap: 2px !important;
   }
 
-  :root {
-    --bg: #fff;
-    --surface: #fff;
-    --surface2: #f5f5f5;
-    --border: #ddd;
-    --text: #111;
-    --muted: #555;
-    --accent-bright: #0d9488;
+  .time-print-box input {
+    border: none !important;
+    border-bottom: none !important;
+    background: transparent !important;
+    flex: 0 0 auto !important;
+    width: 36px !important;      /* Szerokość idealna na 2 cyfry */
+    text-align: right !important;
+    padding: 2px 2px 0 0 !important;
+    margin: 0 !important;
+    font-size: 11pt !important;
+    font-weight: 600 !important;
+  }
+
+  .time-print-box span {
+    text-transform: lowercase !important;
+    font-size: 10pt !important;
+    font-weight: 600 !important;
+    color: #000 !important;
+    margin-right: 8px !important; /* Odstęp po literze 'h' lub 'min' */
+    padding-bottom: 2px !important;
+  }
+
+/* Zużycie filamentu: wyrównane do lewej, bez odstępu przed "g" */
+  .unit-box {
+    display: flex !important;
+    justify-content: flex-start !important; /* Wymusza start od lewej krawędzi */
+    align-items: baseline !important;
+    width: 100% !important;
+    border-bottom: 1px dashed #000 !important;
+    margin-top: 2px !important;
+    gap: 0 !important;
+  }
+
+  .unit-box input {
+    border: none !important;
+    border-bottom: none !important;
+    background: transparent !important;
+    flex: 0 0 auto !important; /* Zapobiega wypychaniu "g" w prawo */
+    width: 52px !important;    /* Mieści swobodnie wartości 4-cyfrowe, np. 2561 */
+    text-align: left !important; /* Wyrównanie cyfr do lewej */
+    padding: 2px 0 0 0 !important;
+    margin: 0 !important;
+    font-size: 11pt !important;
+    font-weight: 600 !important;
+  }
+
+  .unit-box span {
+    text-transform: lowercase !important;
+    font-size: 10pt !important;
+    font-weight: 600 !important;
+    color: #000 !important;
+    margin: 0 !important;
+    padding-bottom: 2px !important;
+  }
+
+  /* Ukrywanie technicznych pół na wydruku dla klienta */
+  #job .fields label:has(#filamentPerKg),
+  #job .fields label:has(#filamentG),
+  #job .fields label:has(#printHours),
+  #job .fields label:has(#printMins),
+  #job .fields label:has(#laborMin) {
+    display: none !important;
+  }
+
+  /* Wygląd miejsca na podpis na kartce */
+  .signature-wrapper {
+    display: flex !important;
+    width: 100% !important;
+    justify-content: flex-end !important; /* Wyrównanie do prawego rogu */
+    margin-top: 60px !important; /* Duży odstęp od podsumowania cen */
+    page-break-inside: avoid !important; /* Zapobiega ucięciu podpisu na pół strony */
+  }
+
+  .print-signature {
+    width: 250px !important; /* Szerokość miejsca na podpis */
+    text-align: center !important;
+  }
+
+  .print-signature .sig-line {
+    border-bottom: 1px solid #000 !important; /* Solidna, czarna linia */
+    height: 40px !important; /* Puste miejsce nad linią na Twój odręczny podpis */
+    margin-bottom: 6px !important;
+  }
+
+  .print-signature span {
+    font-size: 8pt !important;
+    font-weight: 700 !important;
+    color: #333 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 1px !important;
   }
 }
+
+/* Ukrycie miejsca na podpis na ekranie komputera */
+.signature-wrapper {
+  display: none;
+}
+
+.unit-box {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.unit-box span {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
 /* Stylizacja logo w lewym rogu */
 .logo-container {
     position: relative; /* Lub 'fixed' jeśli ma zostać przy przewijaniu */

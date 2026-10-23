@@ -1,9 +1,9 @@
 /**
- * Logika wyceny jak w arkuszu „3d printing pricing sheet.xlsx”.
- * PL / EN — przełącznik u góry strony.
+ * Logika wyceny wydruków 3D.
+ * Zaktualizowana wersja: Czas w min/h, rozdzielenie materiałów.
  */
 
-const FINAL_MARGIN_PCT = 60;
+const FINAL_MARGIN_PCT = 40;
 const LANG_KEY = "printPricing_lang";
 
 const STRINGS = {
@@ -25,7 +25,7 @@ const STRINGS = {
     labelMaterial: "Materiał (filament)",
     labelFilamentKg: "Cena filamentu (zł/kg)",
     labelFilamentG: "Zużycie filamentu (g)",
-    labelPrintHours: "Czas druku (h)",
+    labelPrintHours: "Czas druku (h / min)",
     labelLaborMin: "Robocizna (min)",
     sectionAdv: "Ustawienia zaawansowane",
     show: "Pokaż",
@@ -66,7 +66,7 @@ const STRINGS = {
     cadOpt2: "2 — średni",
     cadOpt3: "3 — trudny",
     cadOpt4: "4 — poprawki",
-    labelCadHours: "Czas (h)",
+    labelCadHours: "Czas CAD (h / min)",
     labelCadCharge: "Koszt CAD (zł)",
     cadRatesHint: "Stawki: poziom 1→25, 2→35, 3→50, 4→10 zł/h.",
     subheadHardware: "Dodatkowe części",
@@ -75,7 +75,7 @@ const STRINGS = {
     addPack: "+ Dodaj opakowanie",
     labelPostage: "Koszt wysyłki (zł)",
     sectionTotals: "Podsumowanie i ceny",
-    dtSumMat: "Materiały",
+    dtSumMat: "Materiały (Filament)",
     dtSumLabor: "Robocizna",
     dtSumMachine: "Maszyna (czas druku)",
     dtSumPack: "Opakowanie i wysyłka",
@@ -116,7 +116,7 @@ const STRINGS = {
     labelMaterial: "Material (filament)",
     labelFilamentKg: "Filament price (PLN/kg)",
     labelFilamentG: "Filament used (g)",
-    labelPrintHours: "Print time (h)",
+    labelPrintHours: "Print time (h / min)",
     labelLaborMin: "Labor (min)",
     sectionAdv: "Advanced settings",
     show: "Show",
@@ -157,7 +157,7 @@ const STRINGS = {
     cadOpt2: "2 — Medium",
     cadOpt3: "3 — Hard",
     cadOpt4: "4 — Revisions",
-    labelCadHours: "Time (h)",
+    labelCadHours: "CAD time (h / min)",
     labelCadCharge: "CAD charge (PLN)",
     cadRatesHint: "Rates match the sheet: level 1→25, 2→35, 3→50, 4→10 PLN/h.",
     subheadHardware: "Extra parts",
@@ -166,7 +166,7 @@ const STRINGS = {
     addPack: "+ Add packaging row",
     labelPostage: "Shipping cost (PLN)",
     sectionTotals: "Totals & prices",
-    dtSumMat: "Materials",
+    dtSumMat: "Materials (Filament)",
     dtSumLabor: "Labor",
     dtSumMachine: "Machine (print time)",
     dtSumPack: "Packaging & shipping",
@@ -309,7 +309,8 @@ function printedMaterialCost() {
 }
 
 function cadCharge() {
-  const h = +$("cadHours").value || 0;
+  // Przeliczanie h + (minuty / 60) dla CAD
+  const h = (+$("cadHours").value || 0) + (+$("cadMins").value || 0) / 60;
   const level = +$("cadLevel").value || 1;
   return h * cadHourlyRate(level);
 }
@@ -324,9 +325,11 @@ function syncCadUi() {
   if (fields) fields.classList.toggle("cad-fields--off", !on);
   const level = $("cadLevel");
   const hours = $("cadHours");
+  const mins = $("cadMins");
   const charge = $("cadCharge");
   if (level) level.disabled = !on;
   if (hours) hours.disabled = !on;
+  if (mins) mins.disabled = !on;
   if (charge) charge.disabled = !on;
 }
 
@@ -425,8 +428,8 @@ function recalc() {
   }
 
   const hw = sumLineRows($("hardware-rows"));
-  const materialsTotal = printed + cad + hw;
-
+  
+  // Tabela materiałów na środku strony oblicza już tylko Filament + CAD (bez części)
   const tbody = $("mat-body");
   let matRows = `
     <tr>
@@ -445,22 +448,55 @@ function recalc() {
     </tr>`;
   }
   tbody.innerHTML = matRows;
-  $("total-materials").textContent = money(materialsTotal);
+  $("total-materials").textContent = money(printed + cad);
 
   const laborHr = (+$("laborMin").value || 0) / 60;
   const laborRate = +$("laborRateHr").value || 0;
   const laborCost = laborHr * laborRate;
 
-  const printH = +$("printHours").value || 0;
+  // Przeliczanie h + (minuty / 60) dla czasu druku
+  const printH = (+$("printHours").value || 0) + (+$("printMins").value || 0) / 60;
   const machineCost = printH * m.printRateHr;
 
   const packLines = sumLineRows($("pack-rows"));
   const postage = +$("postage").value || 0;
   const packTotal = packLines + postage;
 
-  const landed = materialsTotal + laborCost + machineCost + packTotal;
+  const qty = Math.max(1, +$("partQty")?.value || 1);
+  // Koszty produkcyjne (filament, CAD, robocizna, maszyna) mnożymy przez liczbę sztuk
+  const productionCost = (printed + cad + hw + laborCost + machineCost) * qty;
+  const landed = productionCost + packTotal;
 
-  $("sum-mat").textContent = `${money(materialsTotal)} ${z}`;
+  // --- LOGIKA PODSUMOWANIA (rozdzielenie wartości) ---
+  $("sum-mat").textContent = `${money(printed)} ${z}`; // W linii Materiały jest TYLKO filament
+
+  const dtCad = $("dt-sum-cad");
+  const ddCad = $("sum-cad");
+  if (dtCad && ddCad) {
+    if (onCad) { 
+      dtCad.style.display = ""; 
+      ddCad.style.display = ""; 
+      ddCad.textContent = `${money(cad)} ${z}`; 
+    } else {
+      dtCad.style.display = "none"; 
+      ddCad.style.display = "none";
+    }
+  }
+
+  // Automatyczne pokazywanie linijki Dodatkowe części
+  const dtHw = $("dt-sum-hw");
+  const ddHw = $("sum-hw");
+  if (dtHw && ddHw) {
+    if (hw > 0) { 
+      dtHw.style.display = ""; 
+      ddHw.style.display = ""; 
+      ddHw.textContent = `${money(hw)} ${z}`; 
+    } else {
+      dtHw.style.display = "none"; 
+      ddHw.style.display = "none";
+    }
+  }
+
   $("sum-labor").textContent = `${money(laborCost)} ${z}`;
   $("sum-machine").textContent = `${money(machineCost)} ${z}`;
   $("sum-pack").textContent = `${money(packTotal)} ${z}`;
@@ -480,12 +516,14 @@ function recalc() {
       JSON.stringify({
         partName: $("partName").value,
         revision: $("revision").value,
+        partQty: $("partQty").value,
         jobDate: $("jobDate").value,
         preparedBy: $("preparedBy").value,
         materialUsed: $("materialUsed").value,
         filamentPerKg: $("filamentPerKg").value,
         filamentG: $("filamentG").value,
         printHours: $("printHours").value,
+        printMins: $("printMins").value,
         laborMin: $("laborMin").value,
         matEfficiency: $("matEfficiency").value,
         laborRateHr: $("laborRateHr").value,
@@ -500,6 +538,7 @@ function recalc() {
         cadEnabled: cadIncluded(),
         cadLevel: $("cadLevel").value,
         cadHours: $("cadHours").value,
+        cadMins: $("cadMins").value,
         postage: $("postage").value,
         hardware: collectLineRows($("hardware-rows")),
         packaging: collectLineRows($("pack-rows")),
@@ -514,12 +553,14 @@ function wireInputs() {
   const ids = [
     "partName",
     "revision",
+    "partQty",
     "jobDate",
     "preparedBy",
     "materialUsed",
     "filamentPerKg",
     "filamentG",
     "printHours",
+    "printMins",
     "laborMin",
     "matEfficiency",
     "laborRateHr",
@@ -533,6 +574,7 @@ function wireInputs() {
     "bufferFactor",
     "cadLevel",
     "cadHours",
+    "cadMins",
     "postage",
     "cadEnabled",
   ];
@@ -556,12 +598,14 @@ function init() {
       Object.entries({
         partName: d.partName,
         revision: d.revision,
+        partQty: d.partQty,
         jobDate: d.jobDate,
         preparedBy: d.preparedBy,
         materialUsed: d.materialUsed,
         filamentPerKg: d.filamentPerKg,
         filamentG: d.filamentG,
         printHours: d.printHours,
+        printMins: d.printMins,
         laborMin: d.laborMin,
         matEfficiency: d.matEfficiency,
         laborRateHr: d.laborRateHr,
@@ -575,6 +619,7 @@ function init() {
         bufferFactor: d.bufferFactor,
         cadLevel: d.cadLevel,
         cadHours: d.cadHours,
+        cadMins: d.cadMins,
         postage: d.postage,
       }).forEach(([k, v]) => {
         if (v != null && $(k)) $(k).value = v;
